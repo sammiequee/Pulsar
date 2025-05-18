@@ -7,7 +7,7 @@ del build\*.o
 ::DEBUG only works if you have the map and readelf (which is part of MinGW)
 SET "debug="
 ::SET "cwDWARF="
-::if "%1" equ "-d" SET "debug=-debug=0x803992E0 -map=^"Dolphin Emulator\Maps\RMCP01.map^" -readelf=^"C:\MinGW\bin\readelf.exe^""
+::if "%1" equ "-d" SET "debug=-debug -map=^"Dolphin Emulator\Maps\RMCP01.map^" -readelf=^"C:\MinGW\bin\readelf.exe^""
 ::if "%1" equ "-d" SET "cwDWARF=-g"
 
 :: Sources and Compiler
@@ -16,14 +16,14 @@ set "GAMESOURCE=.\GameSource"
 SET "PULSAR=.\PulsarEngine"
 
 :: Change this as necessary depending on where you put CodeWarrior
-SET "CC="
+SET "CC=C:\Users\maple\Desktop\workfiles\pulsar\cw\PowerPC_EABI_Tools\Command_Line_Tools\mwcceppc.exe"
 
 :: Riivolution Destination (change as necessary)
-SET "RIIVO="
+SET "RIIVO=C:\Users\maple\Desktop\workfiles\pulsar\Pulsar-ctgp102plus\riivowut"
 
 :: Compiler flags and folder
 SET CFLAGS=-I- -i %ENGINE% -i %GAMESOURCE% -i %PULSAR% ^
-  -opt all -inline auto -enum int -proc gekko -fp hard -sdata 0 -sdata2 0 -maxerrors 1 -func_align 4 %cwDWARF%
+  -opt all -inline auto -enum int -fp hard -sdata 0 -sdata2 0 -maxerrors 1 -func_align 4 %cwDWARF%
 SET DEFINE=
 
 if "!CC!" == "" (
