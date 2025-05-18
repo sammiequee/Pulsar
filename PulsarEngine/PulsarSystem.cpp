@@ -138,6 +138,10 @@ asmFunc System::GetRaceCount() {
 //Unlock Everything Without Save (_tZ)
 kmWrite32(0x80549974, 0x38600001);
 
+//Wi-Fi Time Limit Expansion (Chadderz)
+kmWrite32(0x8053F3B8, 0x3C600005);
+kmWrite32(0x8053F3BC, 0x60643020);
+
 //Skip ESRB page
 //kmWriteRegionInstruction(0x80604094, 0x4800001c, 'E');
 

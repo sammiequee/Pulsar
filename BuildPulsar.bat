@@ -19,7 +19,7 @@ SET "PULSAR=.\PulsarEngine"
 SET "CC=C:\Users\maple\Desktop\workfiles\pulsar\cw\PowerPC_EABI_Tools\Command_Line_Tools\mwcceppc.exe"
 
 :: Riivolution Destination (change as necessary)
-SET "RIIVO=C:\Users\maple\Desktop\workfiles\pulsar\Pulsar-ctgp102plus\riivowut"
+SET "RIIVO=C:\Users\maple\Desktop\workfiles\pulsar\Pulsar"
 
 :: Compiler flags and folder
 SET CFLAGS=-I- -i %ENGINE% -i %GAMESOURCE% -i %PULSAR% ^

@@ -1,6 +1,9 @@
 # Prerequisites
 *.d
 BuildCode.bat
+BuildPulsar.bat
+/Binaries/Code.pul
+/build/Code.pul
 /cw
 /PulsarPackCreator/Executable/output
 /PulsarPackCreator/Executable/input
