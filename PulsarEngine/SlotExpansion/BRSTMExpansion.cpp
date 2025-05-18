@@ -1,6 +1,6 @@
 #include <kamek.hpp>
 #include <MarioKartWii/Audio/AudioManager.hpp>
-#include <MarioKartWii/UI/Section/SectionMgr.hpp>
+#include <MarioKartWii/UI/SectionMgr/SectionMgr.hpp>
 #include <Sound/MiscSound.hpp>
 #include <SlotExpansion/CupsConfig.hpp>
 #include <SlotExpansion/UI/ExpansionUIMisc.hpp>
@@ -12,7 +12,7 @@ namespace Sound {
 //kmWrite32(0x8009e0dc, 0x7F87E378); //mr r7, r28 to get string length
 
 static char pulPath[0x100];
-s32 CheckBRSTM(const nw4r::snd::DVDSoundArchive* archive, PulsarId id, u8 variantIdx, bool isFinalLap) {
+s32 CheckBRSTM(const nw4r::snd::DVDSoundArchive* archive, PulsarId id, bool isFinalLap) {
 
     const char* root = archive->extFileRoot;
     const char* lapSpecifier = isFinalLap ? "_f" : "_n";
@@ -20,12 +20,10 @@ s32 CheckBRSTM(const nw4r::snd::DVDSoundArchive* archive, PulsarId id, u8 varian
     char trackName[0x100];
     UI::GetTrackBMG(trackName, id);
     snprintf(pulPath, 0x100, "%sstrm/%s%s.brstm", root, trackName, lapSpecifier);
-    ret = DVD::ConvertPathToEntryNum(pulPath);
+    ret = DVDConvertPathToEntryNum(pulPath);
     if(ret < 0) {
-        u32 variantIdx = CupsConfig::sInstance->GetCurVariantIdx();
-        if(variantIdx == 0) snprintf(pulPath, 0x50, "%sstrm/%d%s.brstm", root, CupsConfig::ConvertTrack_PulsarIdToRealId(id), lapSpecifier);
-        else snprintf(pulPath, 0x50, "%sstrm/%d_%d%s.brstm", root, CupsConfig::ConvertTrack_PulsarIdToRealId(id), variantIdx, lapSpecifier);
-        ret = DVD::ConvertPathToEntryNum(pulPath);
+        snprintf(pulPath, 0x50, "%sstrm/%d%s.brstm", root, CupsConfig::ConvertTrack_PulsarIdToRealId(id), lapSpecifier);
+        ret = DVDConvertPathToEntryNum(pulPath);
     }
     return ret;
 }
@@ -34,9 +32,8 @@ nw4r::ut::FileStream* MusicSlotsExpand(nw4r::snd::DVDSoundArchive* archive, void
     const char* extFilePath, u32 r7, u32 length) {
 
     const char firstChar = extFilePath[0xC];
+    const PulsarId track = CupsConfig::sInstance->winningCourse;
     const CupsConfig* cupsConfig = CupsConfig::sInstance;
-    const PulsarId track = cupsConfig->GetWinning();
-
     if((firstChar == 'n' || firstChar == 'S' || firstChar == 'r')) {
         const SectionId section = SectionMgr::sInstance->curSection->sectionId;
         register SoundIDs toPlayId;
@@ -46,6 +43,7 @@ nw4r::ut::FileStream* MusicSlotsExpand(nw4r::snd::DVDSoundArchive* archive, void
             if(section >= SECTION_MAIN_MENU_FROM_BOOT && section <= SECTION_MAIN_MENU_FROM_LICENSE) customBGPath = titleMusicFile;
             else if(section >= SECTION_SINGLE_P_FROM_MENU && section <= SECTION_SINGLE_P_LIST_RACE_GHOST || section == SECTION_LOCAL_MULTIPLAYER) customBGPath = offlineMusicFile;
             else if(section >= SECTION_P1_WIFI && section <= SECTION_P2_WIFI_FROOM_COIN_VOTING) customBGPath = wifiMusicFile;
+
         }
         if(customBGPath != nullptr) extFilePath = customBGPath;
         else if(!CupsConfig::IsReg(track)) {
@@ -56,10 +54,9 @@ nw4r::ut::FileStream* MusicSlotsExpand(nw4r::snd::DVDSoundArchive* archive, void
             if(finalChar == 'f' || finalChar == 'F') isFinalLap = true;
 
             bool found = false;
-            const u8 variantIdx = cupsConfig->GetCurVariantIdx();
-            if(CheckBRSTM(archive, track, variantIdx, isFinalLap) >= 0) found = true;
+            if(CheckBRSTM(archive, track, isFinalLap) >= 0) found = true;
             else if(isFinalLap) {
-                if(CheckBRSTM(archive, track, variantIdx, false) >= 0) found = true;
+                if(CheckBRSTM(archive, track, false) >= 0) found = true;
                 if(found) Audio::Manager::sInstance->soundArchivePlayer->soundPlayerArray->soundList.GetFront().ambientParam.pitch = 1.1f;
             }
             if(found) extFilePath = pulPath;

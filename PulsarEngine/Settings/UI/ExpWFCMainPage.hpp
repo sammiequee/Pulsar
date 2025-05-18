@@ -9,7 +9,11 @@ namespace Pulsar {
 namespace UI {
 class ExpWFCMain : public Pages::WFCMainMenu {
 public:
-    ExpWFCMain();
+    ExpWFCMain() {
+        this->onSettingsClick.subject = this;
+        this->onSettingsClick.ptmf = &ExpWFCMain::OnSettingsButtonClick;
+        this->onButtonSelectHandler.ptmf = &ExpWFCMain::ExtOnButtonSelect;
+    }
     void OnInit() override;
 private:
     void OnSettingsButtonClick(PushButton& PushButton, u32 r5);
@@ -17,20 +21,7 @@ private:
     PtmfHolder_2A<ExpWFCMain, void, PushButton&, u32> onSettingsClick;
     PushButton settingsButton;
 public:
-    PulPageId topSettingsPage;
-};
-
-class ExpWFCModeSel : public Pages::WFCModeSelect {
-public:
-    ExpWFCModeSel();
-    static void InitOTTButton(ExpWFCModeSel& self);
-    static void OnActivatePatch();
-private:
-    void OnModeButtonSelect(PushButton& modeButton, u32 hudSlotId); //8064c718
-    void OnModeButtonClick(PushButton& PushButton, u32 r5);
-    PushButton ottButton;
-    u32 lastClickedButton;
-    static const u32 ottButtonId = 4;
+    PageId topSettingsPage;
 };
 }//namespace UI
 }//namespace Pulsar

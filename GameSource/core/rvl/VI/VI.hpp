@@ -26,7 +26,6 @@ enum XFBMode {
     VI_XFBMODE_SF,
     VI_XFBMODE_DF
 };
-BOOL ResetSIIdle();
 }
 
 #endif
